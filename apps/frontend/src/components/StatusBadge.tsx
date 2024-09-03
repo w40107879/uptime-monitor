@@ -1,12 +1,7 @@
 import { FC } from "react";
+import { MonitorStatusType } from "@root/types/monitor";
 
-interface SiteStatus {
-  id: number;
-  up: boolean;
-  createdAt: string;
-}
-
-const StatusBadge: FC<{ status: SiteStatus | undefined }> = ({
+const StatusBadge: FC<{ status: MonitorStatusType | undefined }> = ({
     status,
   }) => {
     const up = status?.up;

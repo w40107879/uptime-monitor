@@ -24,6 +24,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: uptime-monitor
+      TZ: 'Asia/Taipei' # Can edit to your timezone
+      PGTZ: 'Asia/Taipei' # Can edit to your timezone
     ports:
       - "5432:5432"
     volumes:
@@ -33,7 +35,7 @@ services:
     image: rabbitmq:3-management
     ports:
       - "5672:5672"
-      - "15672:15672" # RabbitMQ 管理介面
+      - "15672:15672" # RabbitMQ admin console
     volumes:
       - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
 

@@ -1,21 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from 'axios';
-
-interface Site {
-  id: number;
-  url: string;
-}
-
-interface SiteData {
-  sites: Site[];
-}
+import { SiteListType } from '@root/types/site';
 
 export const useSiteListQuery = () => {
-  const { isLoading, error, data } = useQuery<SiteData>({
+  const { isLoading, error, data } = useQuery<SiteListType>({
     queryKey: ["sites"],
     queryFn: async () => {
       const response = await axios.get('/api/site/list');
-      return { sites: response.data }
+      return response.data
     },
     refetchInterval: 10000, // 10s
     retry: false,

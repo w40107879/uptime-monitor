@@ -3,8 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Site } from '../site/entities/site.entity';
 import { Monitor } from './entities/monitor.entity';
 import { Repository } from 'typeorm';
-import { SiteStatus, StatusResponse, PingResult } from './monitor.interface';
 import { Cron } from '@nestjs/schedule';
+import {
+  DoCheckType,
+  MonitorStatusType,
+  PingResultType,
+} from '@root/types/monitor';
 
 @Injectable()
 export class MonitorService {
@@ -22,7 +26,7 @@ export class MonitorService {
     await Promise.all(sites.map((site) => this.doCheck(site)));
   }
 
-  public async getAllMonitorStatus(): Promise<StatusResponse> {
+  public async getAllMonitorStatus(): Promise<MonitorStatusType[]> {
     const rows = await this.monitorRepository
       .createQueryBuilder('monitor')
       .select(['monitor.site_id', 'monitor.up', 'monitor.created_at'])
@@ -30,16 +34,14 @@ export class MonitorService {
       .orderBy('monitor.site_id')
       .addOrderBy('monitor.created_at', 'DESC')
       .getMany();
-    const results: SiteStatus[] = rows.map((row) => ({
+    return rows.map((row) => ({
       id: row.site_id,
       up: row.up,
       createdAt: row.created_at,
     }));
-
-    return { sites: results };
   }
 
-  public async doCheck(site: { id: number; url: string }) {
+  public async doCheck(site: DoCheckType) {
     const { id, url } = site;
     const { up } = await this.ping({ url });
     const previous = await this.getPreviousMeasurements(id);
@@ -51,7 +53,7 @@ export class MonitorService {
     return { up };
   }
 
-  private async ping({ url }): Promise<PingResult> {
+  private async ping({ url }): Promise<PingResultType> {
     // If the url does not start with "http:" or "https:", default to "https:".
     if (!url.startsWith('http:') && !url.startsWith('https:')) {
       url = 'https://' + url;

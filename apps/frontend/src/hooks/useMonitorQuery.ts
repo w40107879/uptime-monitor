@@ -1,18 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from 'axios';
-
-interface SiteStatus {
-  id: number;
-  up: boolean;
-  createdAt: string;
-}
-
-interface StatusResponse {
-  sites: SiteStatus[];
-}
+import { MonitorStatusType } from "@root/types/monitor";
 
 export const useMonitorStatusQuery = () => {
-  const { isLoading, error, data } = useQuery<StatusResponse>({
+  const { isLoading, error, data } = useQuery<MonitorStatusType[]>({
     queryKey: ["status"],
     queryFn: async () => {
       const response = await axios.get('/api/monitor/status');

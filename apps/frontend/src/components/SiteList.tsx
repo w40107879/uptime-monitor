@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 import { FC } from "react";
 
 const SiteList: FC = () => {
-    const { isLoading, error, data } = useSiteListQuery()
+    const { isLoading, error, data: sites } = useSiteListQuery()
     const { data: status } = useMonitorStatusQuery();
     const doDelete = useDeleteSiteMutation();
   
@@ -56,7 +56,7 @@ const SiteList: FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {data?.sites.length === 0 && (
+                    {sites && sites.length === 0 && (
                       <tr>
                         <td
                           colSpan={2}
@@ -66,8 +66,8 @@ const SiteList: FC = () => {
                         </td>
                       </tr>
                     )}
-                    {data!.sites.map((site) => {
-                      const st = status?.sites.find((s) => s.id === site.id);
+                    {sites && sites.map((site) => {
+                      const st = status ? status.find((s) => s.id === site.id) : undefined;
                       const dt = st && DateTime.fromISO(st.createdAt);
                       return (
                         <tr key={site.id}>

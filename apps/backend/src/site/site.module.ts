@@ -3,24 +3,13 @@ import { SiteService } from './site.service';
 import { SiteController } from './site.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Site } from './entities/site.entity';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientsModule } from '@nestjs/microservices';
+import { rabbitMQConfig } from '@/config/rabbitmq';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Site]),
-    ClientsModule.register([
-      {
-        name: 'UPTIME_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://localhost:5672'],
-          queue: 'uptime_queue',
-          queueOptions: {
-            durable: false,
-          },
-        },
-      },
-    ]),
+    ClientsModule.register([rabbitMQConfig]),
   ],
   controllers: [SiteController],
   providers: [SiteService],

@@ -1,29 +1,45 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { User } from '@/user/entities/user.entity';
+import { UserService } from '@/user/user.service';
+import { saltRounds } from '@/config/constants';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UserService,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
-  public async signIn(
-    username: string,
-    pass: string,
-  ): Promise<{ access_token: string }> {
-    const user = await this.usersService.getUser(username);
-    if (user?.pwd !== pass) {
-      throw new UnauthorizedException();
+  public async validateUser(email: string, password: string): Promise<User> {
+    const user: User = await this.userService.getUser(email);
+    if (!user) {
+      throw new BadRequestException('User not found');
     }
-    return this.generateJWT(user);
+    const isMatch: boolean = bcrypt.compareSync(password, user.password);
+    if (!isMatch) {
+      throw new BadRequestException('Password does not match');
+    }
+    return user;
   }
 
-  private async generateJWT(user: any) {
-    const payload = { sub: user.userId, username: user.username };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+  public async login(user: User): Promise<{ access_token: string }> {
+    const payload = { email: user.email, sub: user.id };
+    return { access_token: this.jwtService.sign(payload) };
+  }
+
+  public async register(
+    email: string,
+    password: string,
+  ): Promise<{ access_token: string }> {
+    const existingUser = await this.userService.getUser(email);
+    if (existingUser) {
+      throw new BadRequestException('email already exists');
+    }
+    console.log(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const user: User = await this.userService.createUser(email, hashedPassword);
+    return this.login(user);
   }
 }

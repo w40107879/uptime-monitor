@@ -11,10 +11,10 @@ export class User {
   id: number;
 
   @Column()
-  name: string;
+  email: string;
 
   @Column()
-  pwd: string;
+  password: string;
 
   @CreateDateColumn()
   created_at: Date;

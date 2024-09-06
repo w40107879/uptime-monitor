@@ -7,3 +7,5 @@ const configService = new ConfigService();
 export const jwtConstants = {
   secret: configService.get<string>('JWT_SECRET') || 'default_secret_key',
 };
+
+export const saltRounds = 10;

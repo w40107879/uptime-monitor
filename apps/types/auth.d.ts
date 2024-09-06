@@ -1,4 +1,6 @@
 export type SignInType = {
-  name: string;
-  pwd: string;
+  email: string;
+  password: string;
 };
+
+export type RegisterType = SignInType

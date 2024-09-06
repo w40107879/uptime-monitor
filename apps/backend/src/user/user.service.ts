@@ -9,7 +9,14 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
-  public async getUser(userName: string): Promise<User | undefined> {
-    return this.userRepository.findOne({ where: { name: userName } });
+  public async createUser(email: string, password: string): Promise<User> {
+    const user = new User();
+    user.email = email;
+    user.password = password;
+    return this.userRepository.save(user);
+  }
+
+  public async getUser(email: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { email } });
   }
 }

@@ -13,6 +13,7 @@ const LoginPage: FC = () => {
     event.preventDefault();
     loginMutation.mutate({ email, password }, {
       onSuccess: (data) => {
+        console.log(data)
         localStorage.setItem('access_token', data.access_token);
         navigate('/')
       },

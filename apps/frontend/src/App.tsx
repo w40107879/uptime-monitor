@@ -1,21 +1,25 @@
-import SiteList from '@/components/SiteList';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import DashboardPage from '@/pages/Dashboard';
+import LoginPage from '@/pages/Login';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('access_token'));
+  const token = localStorage.getItem('access_token');
+
+  useEffect(() => {
+    setAccessToken(token);
+  }, [token]);
+
   return (
-    <>
-      <div className="min-h-full container px-4 mx-auto my-16">
-        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-          Uptime Monitoring
-        </h2>
-        <p className="mt-2 text-sm text-gray-500">
-          Monitor the uptime of your websites and APIs.
-        </p>
-        <main className="pt-8 pb-16">
-          <SiteList />
-        </main>
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={accessToken ? <DashboardPage /> : <Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   );
 }
 
-export default App
+export default App;

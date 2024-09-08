@@ -1,6 +1,6 @@
-export type SignInType = {
+export type LogInType = {
   email: string;
   password: string;
 };
 
-export type RegisterType = SignInType
+export type RegisterType = LogInType

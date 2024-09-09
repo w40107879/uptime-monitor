@@ -4,3 +4,7 @@ export type LogInType = {
 };
 
 export type RegisterType = LogInType
+
+export type AuthResponse = {
+  access_token: string;
+}

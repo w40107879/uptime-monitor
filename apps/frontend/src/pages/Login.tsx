@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { useLoginMutation } from '@/hooks/useLoginQuery';
+import { useLoginMutation } from '@/hooks/useAuthQuery';
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: FC = () => {
@@ -13,7 +13,6 @@ const LoginPage: FC = () => {
     event.preventDefault();
     loginMutation.mutate({ email, password }, {
       onSuccess: (data) => {
-        console.log(data)
         localStorage.setItem('access_token', data.access_token);
         navigate('/')
       },
@@ -22,6 +21,10 @@ const LoginPage: FC = () => {
       }
     });
   }
+
+  const handleRegisterClick = () => {
+    navigate('/register');
+  };
 
   return (
     <>
@@ -33,7 +36,16 @@ const LoginPage: FC = () => {
                 Monitor Your Website's Uptime with Ease
               </h2>
               <p className="text-sm mt-6 text-gray-800">Keep track of your website's performance effortlessly with our intuitive uptime monitor. Access your account to get started.</p>
-              {/* <p className="text-sm mt-12 text-gray-800">Don't have an account <a href="javascript:void(0);" className="text-blue-600 font-semibold hover:underline ml-1">Register here</a></p> */}
+              <p className="text-sm mt-12 text-gray-800">
+                Don't have an account
+                <button
+                  type="button"
+                  className="text-blue-600 font-semibold hover:underline ml-1"
+                  onClick={handleRegisterClick}
+                >
+                  Register here
+                </button>
+              </p>
             </div>
 
             <form onSubmit={handleLogin} className="max-w-md md:ml-auto w-full">

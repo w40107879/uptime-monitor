@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from 'axios';
+import axiosInstance from "@/utils/AxiosInstance";
 import { SiteListType } from '@root/types/site';
 
 export const useSiteListQuery = () => {
   const { isLoading, error, data } = useQuery<SiteListType>({
     queryKey: ["sites"],
     queryFn: async () => {
-      const response = await axios.get('/api/site/list');
+      const response = await axiosInstance.get('/api/site/list');
       return response.data
     },
     refetchInterval: 10000, // 10s
@@ -21,7 +21,7 @@ export const useSaveSiteMutation = () => {
 
   return useMutation({
     mutationFn: async (url: string) => {
-      const response = await axios.post('/api/site', { url });
+      const response = await axiosInstance.post('/api/site', { url });
       return response.data;
     },
     onSuccess: () => {
@@ -36,7 +36,7 @@ export const useDeleteSiteMutation = () => {
 
   return useMutation({
     mutationFn: async (site: { id: number }) => {
-      const response = await axios.delete(`/api/site/${site.id}`);
+      const response = await axiosInstance.delete(`/api/site/${site.id}`);
       return response.data;
     },
     onSuccess: () => {

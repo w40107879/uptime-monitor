@@ -3,6 +3,7 @@ import DashboardPage from '@/pages/Dashboard';
 import LoginPage from '@/pages/Login';
 import { useEffect } from 'react';
 import RegisterPage from './pages/Register';
+import Layout from '@/components/Layout';
 
 const App = () => {
   const navigate = useNavigate();
@@ -19,7 +20,9 @@ const App = () => {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage/>}></Route>
-      <Route path="/" element={localStorage.getItem('access_token') ? <DashboardPage /> : <Navigate to="/login" />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={localStorage.getItem('access_token') ? <DashboardPage /> : <Navigate to="/login" />} />
+      </Route>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
